@@ -45,32 +45,37 @@ class CarrinhoController {
     }
 
 public function finalizar() {
-        // 1. Verifica login
+        // 1. Verificações (Login e Carrinho Vazio)
         if (!isset($_SESSION['usuario_id'])) {
             $_SESSION['redirect_after_login'] = '?page=finalizar';
             header('Location: ?page=login');
             exit;
         }
-
-        // 2. Verifica carrinho vazio
         if (empty($_SESSION['carrinho'])) {
             header('Location: ?page=carrinho&msg=vazio');
             exit;
         }
 
-        // 3. CALCULA TOTAL E SALVA NO BANCO (NOVO!)
+        // 2. Salva o Pedido (Isso você já tinha feito)
         require_once '../app/models/Pedido.php';
-        
         $total = 0;
         foreach ($_SESSION['carrinho'] as $item) {
             $total += $item['preco'] * $item['qtd'];
         }
-
         $pedidoModel = new Pedido();
-        // Salva: ID do usuário logado e o Total da compra
         $pedidoModel->salvar($_SESSION['usuario_id'], $total);
 
-        // 4. Limpa e redireciona
+        // --- PARTE NOVA: ATUALIZA O ESTOQUE ---
+        // Não precisa de require_once no Produto pois já tem no topo do arquivo
+        $produtoModel = new Produto();
+        
+        foreach ($_SESSION['carrinho'] as $id => $item) {
+            // Chama a função que criamos agora
+            $produtoModel->baixarEstoque($id, $item['qtd']);
+        }
+        // --------------------------------------
+
+        // 3. Limpa e Redireciona
         unset($_SESSION['carrinho']);
         if (isset($_SESSION['redirect_after_login'])) unset($_SESSION['redirect_after_login']);
         
