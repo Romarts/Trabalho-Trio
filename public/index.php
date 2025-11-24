@@ -149,42 +149,66 @@ switch ($pagina) {
         }
         echo "</div>";
 
-        // --- DASHBOARD RESTRITO (SÓ ADMIN VÊ) ---
+// --- DASHBOARD RESTRITO (SÓ ADMIN VÊ) ---
         if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'admin') {
             
+            // --- CÁLCULOS REAIS (Buscando do Banco) ---
+            require_once '../app/models/Produto.php';
+            require_once '../app/models/Pedido.php';
+            require_once '../app/models/Usuario.php';
+
+            // 1. Estoque
+            $pModel = new Produto();
+            $estoqueReal = $pModel->contarEstoqueTotal();
+
+            // 2. Faturamento
+            $pedModel = new Pedido();
+            $faturamentoReal = $pedModel->faturamentoHoje();
+
+            // 3. Clientes
+            $uModel = new Usuario();
+            $clientesReais = $uModel->contarClientes();
+            // ------------------------------------------
+
             echo "<hr class='my-4'>";
             echo "<div class='bg-light p-4 rounded border shadow-sm'>";
                 echo "<h3 class='mb-4 text-center text-danger'>Painel Administrativo (Apenas Admin)</h3>";
                 
-                // Botão principal para acessar o CRUD
-echo "<div class='text-center mb-4 gap-2 d-flex justify-content-center'>
-        <a href='?page=admin-produtos' class='btn btn-danger'>GERENCIAR PRODUTOS</a>
-        <a href='?page=admin-vendas' class='btn btn-success'>VER VENDAS</a>
-        <a href='?page=admin-clientes' class='btn btn-warning'>GERENCIAR CLIENTES</a>
-      </div>";
+                echo "<div class='text-center mb-4 gap-2 d-flex justify-content-center'>
+                        <a href='?page=admin-produtos' class='btn btn-danger'>GERENCIAR PRODUTOS</a>
+                        <a href='?page=admin-vendas' class='btn btn-success'>VER VENDAS</a>
+                        <a href='?page=admin-clientes' class='btn btn-warning'>GERENCIAR CLIENTES</a>
+                      </div>";
 
                 echo "<div class='row text-center'>
                         <div class='col-md-4'>
                             <div class='card text-white bg-primary mb-3'>
                                 <div class='card-header'>Estoque Total</div>
-                                <div class='card-body'><h2 class='card-title'>500+</h2></div>
+                                <div class='card-body'>
+                                    <h2 class='card-title'>" . $estoqueReal . "</h2>
+                                    <p class='card-text'>unidades</p>
+                                </div>
                             </div>
                         </div>
                         <div class='col-md-4'>
                             <div class='card text-white bg-success mb-3'>
                                 <div class='card-header'>Faturamento Hoje</div>
-                                <div class='card-body'><h2 class='card-title'>R$ 1.250,00</h2></div>
+                                <div class='card-body'>
+                                    <h2 class='card-title'>R$ " . number_format($faturamentoReal, 2, ',', '.') . "</h2>
+                                </div>
                             </div>
                         </div>
                         <div class='col-md-4'>
                             <div class='card text-white bg-dark mb-3'>
-                                <div class='card-header'>Clientes Novos</div>
-                                <div class='card-body'><h2 class='card-title'>15</h2></div>
+                                <div class='card-header'>Total de Clientes</div>
+                                <div class='card-body'>
+                                    <h2 class='card-title'>" . $clientesReais . "</h2>
+                                </div>
                             </div>
                         </div>
                       </div>";
             echo "</div>"; 
-        } 
+        }
         
         // Área Pública (Produtos)
         echo "<div class='text-center mt-5'>";

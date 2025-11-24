@@ -1,5 +1,4 @@
 <?php
-// CORREÇÃO AQUI: Adicionei mais um "../" para achar a pasta config correta
 require_once __DIR__ . '/../../config/database.php';
 
 class Pedido {
@@ -12,10 +11,9 @@ class Pedido {
     }
 
     public function salvar($id_usuario, $total) {
-        $query = "INSERT INTO " . $this->table_name . " (id_usuario, total) VALUES (:id_usuario, :total)";
+        $query = "INSERT INTO " . $this->table_name . " (id_usuario, total) VALUES (?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":id_usuario", $id_usuario);
-        $stmt->bindParam(":total", $total);
+        $stmt->bind_param("id", $id_usuario, $total); // int, double
         return $stmt->execute();
     }
 
@@ -24,9 +22,14 @@ class Pedido {
                   FROM " . $this->table_name . " p
                   JOIN usuarios u ON p.id_usuario = u.id
                   ORDER BY p.data_pedido DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
+        return $this->conn->query($query);
+    }
+
+    public function faturamentoHoje() {
+        $query = "SELECT SUM(total) as total FROM " . $this->table_name . " WHERE DATE(data_pedido) = CURDATE()";
+        $result = $this->conn->query($query);
+        $row = $result->fetch_assoc();
+        return $row['total'] ?? 0;
     }
 }
 ?>

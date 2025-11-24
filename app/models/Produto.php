@@ -1,6 +1,6 @@
 <?php
-// app/models/Produto.php
 require_once __DIR__ . '/../../config/database.php';
+
 class Produto {
     private $conn;
     private $table_name = "produtos";
@@ -10,68 +10,56 @@ class Produto {
         $this->conn = $database->getConnection();
     }
 
-    // 1. CRIAR (Create)
     public function criar($nome, $descricao, $preco, $estoque) {
-        $query = "INSERT INTO " . $this->table_name . " SET nome=:nome, descricao=:descricao, preco=:preco, estoque=:estoque";
+        $query = "INSERT INTO " . $this->table_name . " (nome, descricao, preco, estoque) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         
-        // Limpeza básica
-        $nome = htmlspecialchars(strip_tags($nome));
-        $descricao = htmlspecialchars(strip_tags($descricao));
-
-        $stmt->bindParam(":nome", $nome);
-        $stmt->bindParam(":descricao", $descricao);
-        $stmt->bindParam(":preco", $preco);
-        $stmt->bindParam(":estoque", $estoque);
+        // "ssdi" = String, String, Double (decimal), Integer
+        $stmt->bind_param("ssdi", $nome, $descricao, $preco, $estoque);
         return $stmt->execute();
     }
 
-    // 2. LER TODOS (Read)
     public function lerTodos() {
         $query = "SELECT * FROM " . $this->table_name . " ORDER BY id DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
+        $result = $this->conn->query($query);
+        return $result; // Retorna o objeto de resultado direto
     }
 
-    // 3. LER UM SÓ (Para preencher o formulário de edição)
     public function lerUm($id) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $id);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
 
-    // 4. ATUALIZAR (Update)
     public function atualizar($id, $nome, $descricao, $preco, $estoque) {
-        $query = "UPDATE " . $this->table_name . " SET nome=:n, descricao=:d, preco=:p, estoque=:e WHERE id=:id";
+        $query = "UPDATE " . $this->table_name . " SET nome=?, descricao=?, preco=?, estoque=? WHERE id=?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":n", $nome);
-        $stmt->bindParam(":d", $descricao);
-        $stmt->bindParam(":p", $preco);
-        $stmt->bindParam(":e", $estoque);
-        $stmt->bindParam(":id", $id);
+        $stmt->bind_param("ssdii", $nome, $descricao, $preco, $estoque, $id);
         return $stmt->execute();
     }
 
-    // 5. EXCLUIR (Delete)
     public function excluir($id) {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $id);
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 
     public function baixarEstoque($id, $qtd_vendida) {
-        // Atualiza: Estoque Atual MENOS Quantidade Vendida
-        $query = "UPDATE " . $this->table_name . " SET estoque = estoque - :qtd WHERE id = :id";
-        
+        $query = "UPDATE " . $this->table_name . " SET estoque = estoque - ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":qtd", $qtd_vendida);
-        $stmt->bindParam(":id", $id);
-        
+        $stmt->bind_param("ii", $qtd_vendida, $id);
         return $stmt->execute();
+    }
+
+    public function contarEstoqueTotal() {
+        $query = "SELECT SUM(estoque) as total FROM " . $this->table_name;
+        $result = $this->conn->query($query);
+        $row = $result->fetch_assoc();
+        return $row['total'] ?? 0;
     }
 }
 ?>

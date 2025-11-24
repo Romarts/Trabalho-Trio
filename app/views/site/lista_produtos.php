@@ -3,7 +3,7 @@
         <h2>Nossos Produtos</h2>
     </div>
     
-    <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+    <?php while ($row = $stmt->fetch_assoc()): ?>
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
                 <img src="https://dummyimage.com/300x200/dee2e6/6c757d.jpg" class="card-img-top" alt="Produto">

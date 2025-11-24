@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+            <?php while ($row = $stmt->fetch_assoc()): ?>
             <tr>
                 <td>#<?php echo $row['id']; ?></td>
                 <td><?php echo $row['nome_cliente']; ?></td>
