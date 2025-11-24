@@ -1,11 +1,10 @@
 <?php
 // app/models/Produto.php
-require_once '../app/config/database.php';
-
+require_once __DIR__ . '/../../config/database.php';
 class Produto {
     private $conn;
     private $table_name = "produtos";
-
+    
     public function __construct() {
         $database = new Database();
         $this->conn = $database->getConnection();

@@ -12,14 +12,14 @@
     <?php if (empty($_SESSION['carrinho'])): ?>
         <div class="alert alert-warning">Seu carrinho está vazio. <a href="?page=produtos">Ir às compras!</a></div>
     <?php else: ?>
-        <table class="table table-striped">
+        <table class="table table-striped align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>Produto</th>
                     <th>Preço Unitário</th>
                     <th>Qtd</th>
                     <th>Subtotal</th>
-                </tr>
+                    <th>Ações</th> </tr>
             </thead>
             <tbody>
                 <?php 
@@ -33,12 +33,17 @@
                     <td>R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?></td>
                     <td><?php echo $item['qtd']; ?></td>
                     <td>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></td>
+                    <td>
+                        <a href="?page=remover&id=<?php echo $id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este item?');">
+                            Excluir
+                        </a>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" class="text-end"><strong>TOTAL:</strong></td>
+                    <td colspan="4" class="text-end"><strong>TOTAL:</strong></td>
                     <td><strong>R$ <?php echo number_format($total_geral, 2, ',', '.'); ?></strong></td>
                 </tr>
             </tfoot>
@@ -46,7 +51,6 @@
 
         <div class="d-flex justify-content-between mb-5">
             <a href="?page=produtos" class="btn btn-secondary">Continuar Comprando</a>
-
             <a href="?page=finalizar" class="btn btn-success btn-lg">Finalizar Compra</a>
         </div>
 

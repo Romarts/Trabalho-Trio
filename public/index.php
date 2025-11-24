@@ -79,6 +79,19 @@ switch ($pagina) {
             $carrinho->listar();
         }
         break;
+        
+    case 'remover':
+        require_once '../app/controllers/CarrinhoController.php';
+        $carrinho = new CarrinhoController();
+        
+        if (isset($_GET['id'])) {
+            $id_produto = $_GET['id'];
+            $carrinho->remover($id_produto);
+        } else {
+            header('Location: ?page=carrinho');
+        }
+        break;
+    // ----------------------------
 
     case 'finalizar':
         require_once '../app/controllers/CarrinhoController.php';
