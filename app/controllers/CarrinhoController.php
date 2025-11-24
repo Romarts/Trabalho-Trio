@@ -44,21 +44,52 @@ class CarrinhoController {
         include '../app/views/site/carrinho.php';
     }
 
-    public function finalizar() {
-        // ... (seu código de finalizar continua aqui) ...
+public function finalizar() {
+        // 1. Verifica login
         if (!isset($_SESSION['usuario_id'])) {
             $_SESSION['redirect_after_login'] = '?page=finalizar';
             header('Location: ?page=login');
             exit;
         }
+
+        // 2. Verifica carrinho vazio
         if (empty($_SESSION['carrinho'])) {
             header('Location: ?page=carrinho&msg=vazio');
             exit;
         }
+
+        // 3. CALCULA TOTAL E SALVA NO BANCO (NOVO!)
+        require_once '../app/models/Pedido.php';
+        
+        $total = 0;
+        foreach ($_SESSION['carrinho'] as $item) {
+            $total += $item['preco'] * $item['qtd'];
+        }
+
+        $pedidoModel = new Pedido();
+        // Salva: ID do usuário logado e o Total da compra
+        $pedidoModel->salvar($_SESSION['usuario_id'], $total);
+
+        // 4. Limpa e redireciona
         unset($_SESSION['carrinho']);
         if (isset($_SESSION['redirect_after_login'])) unset($_SESSION['redirect_after_login']);
+        
         header('Location: ?page=carrinho&msg=sucesso');
         exit;
     }
+
+public function atualizar() {
+        $id = $_POST['id'];
+        $nova_qtd = $_POST['qtd'];
+
+        // VERIFICAÇÃO EXTRA: Só atualiza se o produto realmente existir no carrinho
+        if ($nova_qtd > 0 && isset($_SESSION['carrinho'][$id])) {
+            $_SESSION['carrinho'][$id]['qtd'] = $nova_qtd;
+        }
+
+        header('Location: ?page=carrinho');
+        exit;
+    }
+
 }
 ?>

@@ -31,7 +31,19 @@
                 <tr>
                     <td><?php echo htmlspecialchars($item['nome']); ?></td>
                     <td>R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?></td>
-                    <td><?php echo $item['qtd']; ?></td>
+                    <td>
+<td>
+    <form action="?page=atualizar" method="POST">
+        
+        <input type="hidden" name="id" value="<?php echo $id; ?>">
+        
+        <input type="number" name="qtd" value="<?php echo $item['qtd']; ?>" min="1" 
+               style="width: 60px; text-align: center;"
+               class="form-control form-control-sm"
+               onchange="this.form.submit()">
+               
+    </form>
+</td>
                     <td>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></td>
                     <td>
                         <a href="?page=remover&id=<?php echo $id; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este item?');">

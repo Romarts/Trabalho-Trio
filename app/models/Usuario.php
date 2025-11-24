@@ -1,5 +1,6 @@
 <?php
-require_once '../config/database.php';
+// CORREÇÃO: Caminho correto do banco
+require_once __DIR__ . '/../../config/database.php';
 
 class Usuario {
     private $conn;
@@ -10,13 +11,28 @@ class Usuario {
         $this->conn = $database->getConnection();
     }
 
-    public function cadastrar($nome, $email, $senha) {
-        $query = "INSERT INTO " . $this->table_name . " SET nome=:nome, email=:email, senha=:senha";
+    // --- CADASTRO E LOGIN (JÁ EXISTIAM) ---
+public function cadastrar($nome, $email, $senha) {
+        // 1. VERIFICAÇÃO: Checa se o e-mail já existe no banco
+        $checkQuery = "SELECT id FROM " . $this->table_name . " WHERE email = :email";
+        $checkStmt = $this->conn->prepare($checkQuery);
+        $checkStmt->bindParam(":email", $email);
+        $checkStmt->execute();
+
+        // Se encontrou alguém com esse e-mail, para tudo e retorna falso
+        if ($checkStmt->rowCount() > 0) {
+            return false; 
+        }
+
+        // 2. Se não existe, prossegue com o cadastro normalmente
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+        
+        $query = "INSERT INTO " . $this->table_name . " SET nome=:nome, email=:email, senha=:senha, tipo='cliente'";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":nome", $nome);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":senha", $senha); // senha em texto puro
+        $stmt->bindParam(":senha", $senhaHash);
 
         return $stmt->execute();
     }
@@ -29,11 +45,30 @@ class Usuario {
 
         if($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($senha === $row['senha']) { // comparação direta
+            // Verifica a senha hash
+            if(password_verify($senha, $row['senha'])) { 
                 return $row;
             }
         }
         return false;
+    }
+
+    // --- NOVO: GERENCIAMENTO DE CLIENTES (O QUE FALTAVA) ---
+    
+    // Lista apenas quem é cliente
+    public function lerClientes() {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE tipo = 'cliente' ORDER BY id DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    // Exclui usuário pelo ID
+    public function excluir($id) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        return $stmt->execute();
     }
 }
 ?>

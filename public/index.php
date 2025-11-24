@@ -34,7 +34,44 @@ switch ($pagina) {
         $auth->logout();
         break;
 
+    case 'atualizar':
+        require_once '../app/controllers/CarrinhoController.php';
+        $carrinho = new CarrinhoController();
+        $carrinho->atualizar();
+        break;
+
     // --- ÁREA DE ADMINISTRADORES (CRUD DE PRODUTOS) ---
+
+    case 'admin-vendas':
+        require_once '../app/controllers/AdminController.php';
+        $admin = new AdminController();
+        $admin->vendas();
+        break;
+
+    case 'admin-clientes':
+        require_once '../app/controllers/AdminController.php';
+        $admin = new AdminController();
+        $admin->clientes();
+        break;
+
+        case 'admin-cliente-form':
+        require_once '../app/controllers/AdminController.php';
+        $admin = new AdminController();
+        $admin->formCliente();
+        break;
+
+    case 'admin-cliente-salvar':
+        require_once '../app/controllers/AdminController.php';
+        $admin = new AdminController();
+        $admin->salvarCliente();
+        break;
+
+    case 'admin-excluir-cliente':
+        require_once '../app/controllers/AdminController.php';
+        $admin = new AdminController();
+        $admin->excluirCliente();
+        break;
+
     // Estas são as rotas que valem nota!
     case 'admin-produtos':
         require_once '../app/controllers/AdminController.php';
@@ -79,7 +116,7 @@ switch ($pagina) {
             $carrinho->listar();
         }
         break;
-        
+
     case 'remover':
         require_once '../app/controllers/CarrinhoController.php';
         $carrinho = new CarrinhoController();
@@ -120,9 +157,11 @@ switch ($pagina) {
                 echo "<h3 class='mb-4 text-center text-danger'>Painel Administrativo (Apenas Admin)</h3>";
                 
                 // Botão principal para acessar o CRUD
-                echo "<div class='text-center mb-4'>
-                        <a href='?page=admin-produtos' class='btn btn-danger btn-lg'>GERENCIAR PRODUTOS (CRUD)</a>
-                      </div>";
+echo "<div class='text-center mb-4 gap-2 d-flex justify-content-center'>
+        <a href='?page=admin-produtos' class='btn btn-danger'>GERENCIAR PRODUTOS</a>
+        <a href='?page=admin-vendas' class='btn btn-success'>VER VENDAS</a>
+        <a href='?page=admin-clientes' class='btn btn-warning'>GERENCIAR CLIENTES</a>
+      </div>";
 
                 echo "<div class='row text-center'>
                         <div class='col-md-4'>
@@ -158,3 +197,20 @@ switch ($pagina) {
 // 5. Carrega o Rodapé
 require_once '../app/views/templates/footer.php';
 ?>
+
+<script>
+function mostrarSenha() {
+    var inputPass = document.getElementById('senha');
+    var btnIcon = document.getElementById('iconeSenha');
+
+    if (inputPass.type === "password") {
+        inputPass.type = "text"; // Mostra a senha
+        btnIcon.classList.remove('bi-eye'); // Remove olho aberto
+        btnIcon.classList.add('bi-eye-slash'); // Põe olho riscado
+    } else {
+        inputPass.type = "password"; // Esconde a senha
+        btnIcon.classList.remove('bi-eye-slash'); // Remove olho riscado
+        btnIcon.classList.add('bi-eye'); // Põe olho aberto
+    }
+}
+</script>

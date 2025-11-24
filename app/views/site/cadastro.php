@@ -1,3 +1,10 @@
+<?php if (isset($erro)): ?>
+        <div class="alert alert-danger text-center">
+            <?php echo $erro; ?>
+        </div>
+    <?php endif;
+?>
+
 <div class="row justify-content-center mt-5">
     <div class="col-md-4">
         <div class="card">

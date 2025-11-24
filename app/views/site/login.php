@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
@@ -26,8 +30,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="senha" class="form-label">Senha</label>
-                            <input type="password" name="senha" id="senha" class="form-control" required placeholder="Sua senha">
+                          <label for="senha" class="form-label">Senha</label>
+                            <div class="input-group">
+                                <input type="password" name="senha" id="senha" class="form-control" required placeholder="Sua senha">
+        
+                                     <button class="btn btn-outline-secondary" type="button" onclick="mostrarSenha()">
+                                        <i id="iconeSenha" class="bi bi-eye"></i>
+                                    </button>
+                            </div>
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
@@ -36,8 +46,7 @@
                     </form>
                 </div>
                 <div class="card-footer text-center py-3 bg-light">
-                    <small>Não tem conta? <a href="?page=cadastro" class="text-decoration-none fw-bold">Cadastre-se</a></small>
-                </div>
+                    <small>Não tem conta? <a href="?page=cadastrar" class="text-decoration-none fw-bold">Cadastre-se</a></small>                </div>
             </div>
         </div>
     </div>

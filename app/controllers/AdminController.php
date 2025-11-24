@@ -62,5 +62,50 @@ class AdminController {
         }
         header('Location: ?page=admin-produtos&msg=deletado');
     }
+
+    // --- PARTE NOVA: VENDAS ---
+    public function vendas() {
+        require_once '../app/models/Pedido.php';
+        $pedidoModel = new Pedido();
+        $stmt = $pedidoModel->lerTodas();
+        include '../app/views/site/admin_vendas.php';
+    }
+
+    // --- PARTE NOVA: CLIENTES ---
+    public function clientes() {
+        require_once '../app/models/Usuario.php';
+        $usuarioModel = new Usuario();
+        $stmt = $usuarioModel->lerClientes();
+        include '../app/views/site/admin_clientes.php';
+    }
+
+    public function excluirCliente() {
+        if (isset($_GET['id'])) {
+            require_once '../app/models/Usuario.php';
+            $usuarioModel = new Usuario();
+            $usuarioModel->excluir($_GET['id']);
+        }
+        header('Location: ?page=admin-clientes&msg=deletado');
+    }
+    public function formCliente() {
+        include '../app/views/site/admin_cliente_form.php';
+    }
+
+    // Salva o cliente no banco
+    public function salvarCliente() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            require_once '../app/models/Usuario.php';
+            $usuarioModel = new Usuario();
+
+            $nome = $_POST['nome'];
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
+
+            // Usa a função cadastrar que já existia no Model
+            $usuarioModel->cadastrar($nome, $email, $senha);
+
+            header('Location: ?page=admin-clientes&msg=criado');
+        }
+    }
 }
 ?>

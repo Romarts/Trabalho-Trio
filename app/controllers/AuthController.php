@@ -43,21 +43,27 @@ class AuthController {
         }
     }
 
-    public function cadastrar() {
+public function cadastrar() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nome = $_POST['nome'];
             $email = $_POST['email'];
             $senha = $_POST['senha'];
             
             $userModel = new Usuario();
+            
+            // Tenta cadastrar
             if ($userModel->cadastrar($nome, $email, $senha)) {
-                // Redireciona para o login com mensagem de sucesso
+                // SUCESSO: Redireciona para login
                 header("Location: ?page=login&msg=sucesso");
                 exit;
             } else {
-                echo "Erro ao cadastrar.";
+                // FALHA: E-mail já existe
+                $erro = "Este e-mail já está cadastrado! Tente outro.";
+                // Carrega a tela de cadastro novamente mostrando o erro
+                include '../app/views/site/cadastro.php';
             }
         } else {
+            // Se não for POST, só mostra o formulário
             include '../app/views/site/cadastro.php';
         }
     }
