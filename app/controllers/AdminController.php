@@ -1,39 +1,66 @@
 <?php
+// app/controllers/AdminController.php
+require_once '../app/models/Produto.php';
 
 class AdminController {
 
-    private $db;
-
     public function __construct() {
-        require_once '../app/models/Conexao.php';
-        $this->db = Conexao::getInstance();
-
-        // Verifica se está logado e é admin
-        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_admin'] != 1) {
-            echo "<div class='alert alert-danger text-center m-4'>Acesso negado.</div>";
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        // Verifica se é ADMIN. Se não for, manda pra home.
+        if (!isset($_SESSION['usuario_tipo']) || $_SESSION['usuario_tipo'] !== 'admin') {
+            header('Location: index.php');
             exit;
         }
     }
 
-    public function dashboard() {
-        require '../app/views/admin/dashboard.php';
+    // Lista os produtos na tabela
+    public function index() {
+        $produtoModel = new Produto();
+        $stmt = $produtoModel->lerTodos();
+        include '../app/views/site/admin_lista.php';
     }
 
-    public function criarAdmin() {
-        require '../app/views/admin/criar_admin.php';
+    // Mostra o formulário (Serve para Novo e Editar)
+    public function form() {
+        $produto = null;
+        if (isset($_GET['id'])) {
+            $produtoModel = new Produto();
+            $produto = $produtoModel->lerUm($_GET['id']);
+        }
+        include '../app/views/site/admin_form.php';
     }
 
-    public function salvarAdmin() {
+    // Recebe os dados do formulário e salva
+    public function salvar() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $produtoModel = new Produto();
+            
+            // Pega os dados do POST
+            $id = $_POST['id'];
+            $nome = $_POST['nome'];
+            $descricao = $_POST['descricao'];
+            $preco = $_POST['preco'];
+            $estoque = $_POST['estoque'];
 
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
+            if ($id) {
+                // Se tem ID, é edição
+                $produtoModel->atualizar($id, $nome, $descricao, $preco, $estoque);
+            } else {
+                // Se não tem, é novo
+                $produtoModel->criar($nome, $descricao, $preco, $estoque);
+            }
+            header('Location: ?page=admin-produtos&msg=salvo');
+        }
+    }
 
-        $sql = "INSERT INTO usuarios (nome, email, senha, is_admin) VALUES (?, ?, ?, 1)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$nome, $email, $senha]);
-
-        echo "<div class='alert alert-success text-center m-4'>Administrador criado com sucesso!</div>";
-        echo "<div class='text-center'><a class='btn btn-primary' href='?page=admin'>Voltar ao painel</a></div>";
+    // Apaga o produto
+    public function excluir() {
+        if (isset($_GET['id'])) {
+            $produtoModel = new Produto();
+            $produtoModel->excluir($_GET['id']);
+        }
+        header('Location: ?page=admin-produtos&msg=deletado');
     }
 }
+?>
