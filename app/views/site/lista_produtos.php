@@ -116,7 +116,7 @@
                 
                 <div class="card h-100 product-card">
                     <div class="img-container">
-                        <img src="<?php echo $img; ?>" alt="<?php echo htmlspecialchars($row['nome']); ?>">
+                        <img src="<?php echo $row['url_imagem']; ?>" class="card-img-top" alt="<?php echo $row['nome']; ?>" style="height: 200px; object-fit: cover;">
                         </div>
 
                     <div class="card-body d-flex flex-column">
