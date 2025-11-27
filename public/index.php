@@ -7,245 +7,169 @@ if (session_status() === PHP_SESSION_NONE) {
 // 2. Carrega o Cabeçalho
 require_once '../app/views/templates/header.php';
 
-// 3. Captura qual página o usuário quer acessar
+// 3. Captura a página
 $pagina = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // 4. Roteador
 switch ($pagina) {
     
-    // --- ÁREA DE ACESSO (LOGIN/LOGOUT) ---
-    case 'login':
-        require_once '../app/controllers/AuthController.php';
-        $auth = new AuthController();
-        $auth->login();
-        break;
+    // --- ÁREA DE ACESSO ---
+    case 'login': require_once '../app/controllers/AuthController.php'; $a = new AuthController(); $a->login(); break;
+    case 'cadastrar': require_once '../app/controllers/AuthController.php'; $a = new AuthController(); $a->cadastrar(); break;
+    case 'logout': require_once '../app/controllers/AuthController.php'; $a = new AuthController(); $a->logout(); break;
 
-    case 'cadastrar':
-        require_once '../app/controllers/AuthController.php';
-        $auth = new AuthController();
-        $auth->cadastrar();
-        break;
-        
-    case 'logout':
-        require_once '../app/controllers/AuthController.php';
-        $auth = new AuthController();
-        $auth->logout();
-        break;
-
-    // --- ÁREA DO CARRINHO (ATUALIZADA) ---
-    // Adicionei 'atualizar_carrinho' para funcionar com o visual novo
-    case 'atualizar':
-    case 'atualizar_carrinho': 
-        require_once '../app/controllers/CarrinhoController.php';
-        $carrinho = new CarrinhoController();
-        $carrinho->atualizar();
-        break;
-
-    // Adicionei 'remover_item' para funcionar com o visual novo (ícone da lixeira)
-    case 'remover':
-    case 'remover_item':
-        require_once '../app/controllers/CarrinhoController.php';
-        $carrinho = new CarrinhoController();
-        
-        if (isset($_GET['id'])) {
-            $id_produto = $_GET['id'];
-            $carrinho->remover($id_produto);
-        } else {
-            header('Location: ?page=carrinho');
-        }
-        break;
-
+    // --- CARRINHO ---
+    case 'atualizar': case 'atualizar_carrinho': 
+        require_once '../app/controllers/CarrinhoController.php'; $c = new CarrinhoController(); $c->atualizar(); break;
+    case 'remover': case 'remover_item':
+        require_once '../app/controllers/CarrinhoController.php'; $c = new CarrinhoController();
+        if (isset($_GET['id'])) $c->remover($_GET['id']); else header('Location: ?page=carrinho'); break;
     case 'carrinho':
-        require_once '../app/controllers/CarrinhoController.php';
-        $carrinho = new CarrinhoController();
-        
-        if (isset($_GET['add'])) {
-            $id_produto = $_GET['add'];
-            $carrinho->adicionar($id_produto);
-        } else {
-            $carrinho->listar();
-        }
-        break;
-
+        require_once '../app/controllers/CarrinhoController.php'; $c = new CarrinhoController();
+        if (isset($_GET['add'])) $c->adicionar($_GET['add']); else $c->listar(); break;
     case 'finalizar':
-        require_once '../app/controllers/CarrinhoController.php';
-        $carrinho = new CarrinhoController();
-        $carrinho->finalizar();
-        break;
+        require_once '../app/controllers/CarrinhoController.php'; $c = new CarrinhoController(); $c->finalizar(); break;
 
-    // --- ÁREA DE ADMINISTRADORES (MANTIDA ORIGINAL) ---
+    // --- ADMIN (Rotas mantidas) ---
+    case 'admin-vendas': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->vendas(); break;
+    case 'admin-clientes': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->clientes(); break;
+    case 'admin-cliente-form': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->formCliente(); break;
+    case 'admin-cliente-salvar': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->salvarCliente(); break;
+    case 'admin-excluir-cliente': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->excluirCliente(); break;
+    case 'admin-produtos': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->index(); break;
+    case 'admin-form': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->form(); break;
+    case 'admin-salvar': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->salvar(); break;
+    case 'admin-excluir': require_once '../app/controllers/AdminController.php'; $adm = new AdminController(); $adm->excluir(); break;
 
-    case 'admin-vendas':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->vendas();
-        break;
-
-    case 'admin-clientes':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->clientes();
-        break;
-
-    case 'admin-cliente-form':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->formCliente();
-        break;
-
-    case 'admin-cliente-salvar':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->salvarCliente();
-        break;
-
-    case 'admin-excluir-cliente':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->excluirCliente();
-        break;
-
-    case 'admin-produtos':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->index();
-        break;
-
-    case 'admin-form':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->form();
-        break;
-
-    case 'admin-salvar':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->salvar();
-        break;
-
-    case 'admin-excluir':
-        require_once '../app/controllers/AdminController.php';
-        $admin = new AdminController();
-        $admin->excluir();
-        break;
-
-    // --- ÁREA DE PRODUTOS ---
+    // --- PRODUTOS ---
     case 'produtos':
         require_once '../app/controllers/ProdutoController.php';
         $controller = new ProdutoController();
         $controller->listar();
         break;
 
-    // --- PÁGINA INICIAL (HOME) ---
+    // --- HOME PAGE (VERSÃO MADEIRA / RÚSTICA) ---
     default:
-        echo "<div class='py-5 text-center'>";
-        echo "<h1 class='display-4'>Bem-vindo à Loja Faculdade</h1>";
-        
-        // Mensagem de boas-vindas
-        if(isset($_SESSION['usuario_nome'])) {
-            echo "<p class='lead text-success'>Olá, <strong>" . htmlspecialchars($_SESSION['usuario_nome']) . "</strong>! Boas compras.</p>";
-        } else {
-            echo "<p class='lead'>Faça login para aproveitar as melhores ofertas.</p>";
-        }
-        echo "</div>";
-
-        // --- DASHBOARD RESTRITO (SÓ ADMIN VÊ - MANTIDO ORIGINAL) ---
+        // Painel Admin (SÓ PARA ADMIN)
         if (isset($_SESSION['usuario_tipo']) && $_SESSION['usuario_tipo'] == 'admin') {
-            
-            require_once '../app/models/Produto.php';
-            require_once '../app/models/Usuario.php';
-            // require_once '../app/models/Pedido.php'; 
+            $estoque = 0; $vendas = 0; $clientes = 0;
+            if(file_exists('../app/models/Produto.php')) { require_once '../app/models/Produto.php'; if(class_exists('Produto')) { $m=new Produto(); if(method_exists($m,'contarEstoqueTotal')) $estoque=$m->contarEstoqueTotal(); }}
+            if(file_exists('../app/models/Usuario.php')) { require_once '../app/models/Usuario.php'; if(class_exists('Usuario')) { $m=new Usuario(); if(method_exists($m,'contarClientes')) $clientes=$m->contarClientes(); }}
+            if(file_exists('../app/models/Pedido.php')) { require_once '../app/models/Pedido.php'; if(class_exists('Pedido')) { $m=new Pedido(); if(method_exists($m,'faturamentoHoje')) $vendas=$m->faturamentoHoje(); }}
 
-            $estoqueReal = 0;
-            $faturamentoReal = 0;
-            $clientesReais = 0;
-
-            // Verificações de segurança para evitar erro fatal se o arquivo não existir
-            if(class_exists('Produto')) {
-                $pModel = new Produto();
-                if(method_exists($pModel, 'contarEstoqueTotal')) {
-                    $estoqueReal = $pModel->contarEstoqueTotal();
-                }
-            }
-            if(class_exists('Usuario')) {
-                $uModel = new Usuario();
-                if(method_exists($uModel, 'contarClientes')) {
-                    $clientesReais = $uModel->contarClientes();
-                }
-            }
-            if(class_exists('Pedido')) {
-                $pedModel = new Pedido();
-                if(method_exists($pedModel, 'faturamentoHoje')) {
-                    $faturamentoReal = $pedModel->faturamentoHoje();
-                }
-            }
-
-            echo "<hr class='my-4'>";
-            echo "<div class='bg-light p-4 rounded border shadow-sm'>";
-                echo "<h3 class='mb-4 text-center text-danger'>Painel Administrativo (Apenas Admin)</h3>";
-                
-                echo "<div class='text-center mb-4 gap-2 d-flex justify-content-center'>
-                        <a href='?page=admin-produtos' class='btn btn-danger'>GERENCIAR PRODUTOS</a>
-                        <a href='?page=admin-vendas' class='btn btn-success'>VER VENDAS</a>
-                        <a href='?page=admin-clientes' class='btn btn-warning'>GERENCIAR CLIENTES</a>
-                      </div>";
-
-                echo "<div class='row text-center'>
-                        <div class='col-md-4'>
-                            <div class='card text-white bg-primary mb-3'>
-                                <div class='card-header'>Estoque Total</div>
-                                <div class='card-body'>
-                                    <h2 class='card-title'>" . $estoqueReal . "</h2>
-                                    <p class='card-text'>unidades</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div class='card text-white bg-success mb-3'>
-                                <div class='card-header'>Faturamento Hoje</div>
-                                <div class='card-body'>
-                                    <h2 class='card-title'>R$ " . number_format($faturamentoReal, 2, ',', '.') . "</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class='col-md-4'>
-                            <div class='card text-white bg-dark mb-3'>
-                                <div class='card-header'>Total de Clientes</div>
-                                <div class='card-body'>
-                                    <h2 class='card-title'>" . $clientesReais . "</h2>
-                                </div>
-                            </div>
-                        </div>
-                      </div>";
-            echo "</div>"; 
+            echo "<div class='container mt-3'><div class='alert alert-secondary border-0 shadow-sm' style='background-color: #f8f9fa;'>";
+            echo "<h5 class='text-center mb-3 text-muted'><i class='bi bi-tools'></i> Painel do Artesão (Admin)</h5>";
+            echo "<div class='row text-center'>
+                    <div class='col-md-4'><strong>Peças no Estoque:</strong> $estoque</div>
+                    <div class='col-md-4'><strong>Vendas Hoje:</strong> R$ ".number_format($vendas,2,',','.')."</div>
+                    <div class='col-md-4'><strong>Clientes:</strong> $clientes</div>
+                  </div>";
+            echo "<div class='text-center mt-3'><a href='?page=admin-produtos' class='btn btn-sm btn-dark'>Acessar Oficina</a></div>";
+            echo "</div></div>";
         }
-        
-        // Área Pública
-        echo "<div class='text-center mt-5'>";
-            echo "<h4 class='mb-3'>Confira nossas ofertas</h4>";
-            echo "<a href='?page=produtos' class='btn btn-primary btn-lg'>Ver Todos os Produtos</a>";
-        echo "</div>";
+        ?>
+
+        <!-- 1. Banner Principal (Hero) - Estilo Madeira -->
+        <div class="p-5 mb-5 text-white rounded-0 text-center" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1604085572504-a392ebf03049?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; border-bottom: 5px solid #8B4513;">
+            <div class="container py-5">
+                <h1 class="display-3 fw-bold" style="text-shadow: 2px 2px 4px #000;">Arte & Madeira</h1>
+                <p class="fs-4 mb-4 text-light">Decoração rústica e móveis artesanais para deixar seu lar aconchegante.</p>
+                <a href="?page=produtos" class="btn btn-lg px-5 py-3 fw-bold rounded-pill shadow" style="background-color: #8B4513; border: none; color: white;">Ver Coleção</a>
+            </div>
+        </div>
+
+        <!-- 2. Conceitos (Vantagens) -->
+        <div class="container mb-5">
+            <div class="row text-center g-4">
+                <div class="col-md-4">
+                    <div class="p-4 border rounded shadow-sm h-100">
+                        <i class="bi bi-tree fs-1 text-success"></i>
+                        <h4 class="mt-3">Madeira Sustentável</h4>
+                        <p class="text-muted">Trabalhamos apenas com madeira de reflorestamento certificada.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded shadow-sm h-100">
+                        <i class="bi bi-hammer fs-1" style="color: #8B4513;"></i>
+                        <h4 class="mt-3">Feito à Mão</h4>
+                        <p class="text-muted">Cada peça é única, produzida artesanalmente com carinho.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded shadow-sm h-100">
+                        <i class="bi bi-heart fs-1 text-danger"></i>
+                        <h4 class="mt-3">Design Exclusivo</h4>
+                        <p class="text-muted">Peças que trazem personalidade e calor para o seu ambiente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Categorias (Madeira) -->
+        <div class="bg-light py-5">
+            <div class="container">
+                <h2 class="text-center mb-5 fw-bold text-dark">Explore Nossas Categorias</h2>
+                <div class="row g-4">
+                    <!-- Card 1 -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1538688521862-98aa01ac46d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img" alt="Móveis" style="height: 300px; object-fit: cover; filter: brightness(0.7);">
+                            <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                                <h3 class="card-title fw-bold text-white">Móveis Rústicos</h3>
+                                <a href="?page=produtos" class="btn btn-light mt-2 stretched-link">Ver Móveis</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img" alt="Decoração" style="height: 300px; object-fit: cover; filter: brightness(0.7);">
+                            <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                                <h3 class="card-title fw-bold text-white">Decoração de Parede</h3>
+                                <a href="?page=produtos" class="btn btn-light mt-2 stretched-link">Ver Decoração</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img" alt="Utensílios" style="height: 300px; object-fit: cover; filter: brightness(0.7);">
+                            <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
+                                <h3 class="card-title fw-bold text-white">Utensílios & Cozinha</h3>
+                                <a href="?page=produtos" class="btn btn-light mt-2 stretched-link">Ver Utensílios</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Newsletter -->
+        <div class="container py-5 text-center">
+            <h2 class="fw-bold mb-3">Junte-se ao Clube da Madeira</h2>
+            <p class="text-muted mb-4">Receba dicas de decoração e ofertas de peças únicas.</p>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-lg" placeholder="Seu e-mail" aria-label="Seu e-mail">
+                        <button class="btn btn-dark" type="button" onclick="alert('Inscrito com sucesso!')">Inscrever-se</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
         break;
 }
 
-// 5. Carrega o Rodapé
+// 5. Rodapé
 require_once '../app/views/templates/footer.php';
 ?>
 
-<!-- SCRIPT DE SENHA (MANTIDO ORIGINAL) -->
 <script>
 function mostrarSenha() {
-    var inputPass = document.getElementById('senha');
-    var btnIcon = document.getElementById('iconeSenha');
-
-    if (inputPass.type === "password") {
-        inputPass.type = "text"; 
-        btnIcon.classList.remove('bi-eye'); 
-        btnIcon.classList.add('bi-eye-slash'); 
-    } else {
-        inputPass.type = "password"; 
-        btnIcon.classList.remove('bi-eye-slash'); 
-        btnIcon.classList.add('bi-eye'); 
-    }
+    var i = document.getElementById('senha'); var b = document.getElementById('iconeSenha');
+    if (i.type === "password") { i.type = "text"; b.classList.replace('bi-eye', 'bi-eye-slash'); }
+    else { i.type = "password"; b.classList.replace('bi-eye-slash', 'bi-eye'); }
 }
 </script>
