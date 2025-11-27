@@ -113,7 +113,7 @@ switch ($pagina) {
                     <!-- Card 1 -->
                     <div class="col-md-4">
                         <div class="card border-0 shadow-lg h-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1538688521862-98aa01ac46d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img" alt="Móveis" style="height: 300px; object-fit: cover; filter: brightness(0.7);">
+                            <img src="https://allmadloja.com.br/wp-content/uploads/2019/10/M%C3%B3veis-de-madeira-para-o-interior-da-casa.webp" class="card-img" alt="Móveis" style="height: 300px; object-fit: cover; filter: brightness(0.7);">
                             <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
                                 <h3 class="card-title fw-bold text-white">Móveis Rústicos</h3>
                                 <a href="?page=produtos" class="btn btn-light mt-2 stretched-link">Ver Móveis</a>
