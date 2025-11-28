@@ -88,7 +88,7 @@
                     </div>
                 <?php endif; ?>
 
-                <form action="?page=cadastrar" method="POST">
+                <form action="?page=fotos_produtos" method="POST" enctype="multipart/form-data"></form>
                     
                     <div class="mb-3">
                         <label class="form-label text-muted fw-bold small">NOME COMPLETO</label>

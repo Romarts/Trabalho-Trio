@@ -7,11 +7,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <style>
-        /* --- ESTILO PERSONALIZADO (Tema Black & Neon) --- */
+        /* --- TEMA RÚSTICO (Arte & Madeira) --- */
         
+        :root {
+            --cor-madeira: #A0522D; /* Marrom Sienna */
+            --cor-madeira-escura: #8B4513;
+            --fundo-escuro: #2c2a29; /* Cinza Café */
+        }
+
         .navbar-custom {
-            background-color: #000000; /* Preto absoluto */
-            border-bottom: 4px solid #00ff4c; /* Borda Neon */
+            background-color: var(--fundo-escuro);
+            border-bottom: 4px solid var(--cor-madeira);
             padding: 0.8rem 0;
         }
 
@@ -22,54 +28,58 @@
             color: white !important;
             display: flex;
             align-items: center;
+            font-family: 'Georgia', serif; /* Fonte mais clássica */
+        }
+
+        /* Ícone da logo */
+        .logo-icon {
+            color: var(--cor-madeira);
         }
 
         /* Links do Menu */
         .nav-link {
-            color: rgba(255,255,255,0.7) !important;
+            color: rgba(255,255,255,0.8) !important;
             font-weight: 500;
             margin-left: 10px;
             transition: all 0.3s;
         }
         .nav-link:hover, .nav-link.active {
-            color: #00ff4c !important;
+            color: var(--cor-madeira) !important;
         }
 
-        /* Botão de Login (Canto Direito) */
+        /* Botão de Login (Rústico) */
         .btn-login-nav {
             background-color: transparent;
-            color: white; /* Texto Branco */
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50px; /* Redondo */
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px; /* Bordas levemente arredondadas, menos "tech" */
             padding: 8px 20px;
             font-size: 0.9rem;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px; /* Espaço entre texto e ícone */
+            gap: 10px;
             transition: all 0.3s ease;
         }
 
         .btn-login-nav:hover {
-            border-color: #00ff4c;
-            color: #00ff4c;
-            background-color: rgba(0, 255, 76, 0.1);
+            border-color: var(--cor-madeira);
+            background-color: var(--cor-madeira);
+            color: white;
         }
 
-        /* Avatar do Usuário (Logado) */
+        /* Avatar do Usuário */
         .user-avatar {
             width: 35px;
             height: 35px;
-            background-color: #0056b3; /* Azul parecido com o do Google/YouTube */
+            background-color: var(--cor-madeira);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.1rem;
         }
-
     </style>
 </head>
 <body>
@@ -78,17 +88,17 @@
   <div class="container-fluid px-4"> 
     
     <a class="navbar-brand" href="index.php">
-        <i class="bi bi-shop me-2 text-success"></i>Loja Faculdade
+        <i class="bi bi-tree-fill me-2 logo-icon"></i> Arte & Madeira
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-      <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link" href="?page=home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="?page=produtos">Produtos</a></li>
+        <li class="nav-item"><a class="nav-link" href="?page=produtos">Coleção</a></li>
         <li class="nav-item"><a class="nav-link" href="?page=carrinho">Carrinho</a></li>
       </ul>
       
@@ -100,7 +110,7 @@
                         <?php echo strtoupper(substr($_SESSION['nome'] ?? 'U', 0, 1)); ?>
                     </div>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-small shadow">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="?page=logout">Sair</a></li>
@@ -108,8 +118,8 @@
             </div>
         <?php else: ?>
             <a href="?page=login" class="btn-login-nav">
-                <i class="bi bi-person-circle fs-5"></i>
-                <span>Fazer Login</span>
+                <i class="bi bi-person fs-5"></i>
+                <span>Entrar</span>
             </a>
         <?php endif; ?>
       </div>

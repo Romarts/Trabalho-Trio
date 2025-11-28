@@ -2,10 +2,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <style>
-        /* --- ESTILO PERSONALIZADO (Cores do Cadastro aplicadas ao Login) --- */
+        /* --- ESTILO RÚSTICO (Arte & Madeira) --- */
         
+        :root {
+            --cor-madeira: #A0522D;      /* Marrom Sienna */
+            --cor-madeira-hover: #8B4513; /* Marrom mais escuro */
+            --fundo-escuro: #2c2a29;      /* Cinza Café */
+        }
+
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* Fundo creme suave/off-white para combinar com madeira */
+            background-color: #fdfbf7; 
             min-height: 100vh;
         }
 
@@ -19,73 +26,80 @@
 
         .login-card {
             border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 1); /* Sombra mais escura igual cadastro */
+            border-radius: 8px; /* Cantos menos arredondados, mais sóbrios */
+            box-shadow: 0 10px 30px rgba(60, 40, 30, 0.15); /* Sombra quente */
             overflow: hidden;
             animation: fadeInUp 0.8s ease-out;
             background-color: white;
         }
 
-        /* CABEÇALHO: Preto com borda Verde Neon */
+        /* CABEÇALHO: Cinza Café com borda Madeira */
         .login-header {
-            background: #000000ff; 
+            background: var(--fundo-escuro); 
             color: white;
             padding: 2rem 1rem;
             text-align: center;
-            border-bottom: 5px solid #00ff4cff; 
+            border-bottom: 5px solid var(--cor-madeira); 
+            font-family: 'Georgia', serif; /* Fonte elegante */
         }
 
         .input-group-text {
-            background-color: #f8f9fa;
+            background-color: #fcfcfc;
             border-right: none;
+            color: #666;
         }
 
         .form-control {
             border-left: none;
             padding: 12px;
+            background-color: #fcfcfc;
         }
 
-        /* FOCO: Brilho e Borda Verde */
+        /* FOCO: Brilho Marrom Suave */
         .form-control:focus {
             box-shadow: none;
             border-color: #ced4da;
         }
         
         .input-group:focus-within {
-            box-shadow: 0 0 0 0.25rem rgba(0, 245, 33, 0.65); /* Sombra Verde */
+            box-shadow: 0 0 0 0.25rem rgba(160, 82, 45, 0.25); /* Sombra Marrom */
             border-radius: 0.375rem;
         }
         .input-group:focus-within .input-group-text, 
         .input-group:focus-within .form-control {
-            border-color: #1adb00ff; /* Borda Verde */
+            border-color: var(--cor-madeira); /* Borda Marrom */
+            color: var(--cor-madeira-hover);
         }
 
-        /* BOTÃO: Preto que fica Verde ao passar o mouse */
+        /* BOTÃO: Marrom Madeira */
         .btn-login {
             padding: 12px;
             font-weight: bold;
             letter-spacing: 1px;
             text-transform: uppercase;
-            transition: transform 0.2s;
-            background-color: #000000ff; /* Preto */
+            transition: transform 0.2s, background-color 0.3s;
+            background-color: var(--cor-madeira);
             border: none;
             color: white;
+            border-radius: 4px;
         }
 
         .btn-login:hover {
-            background-color: #00be19ff; /* Verde Hover */
-            transform: scale(1.02);
+            background-color: var(--cor-madeira-hover);
+            transform: translateY(-2px);
             color: white;
+            box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
         }
 
-        /* Link de cadastro com a cor verde */
+        /* Link de cadastro com a cor madeira */
         .link-destaque {
-            color: #00be19ff;
+            color: var(--cor-madeira);
             text-decoration: none;
             font-weight: bold;
         }
         .link-destaque:hover {
-            color: #00ff4cff;
+            color: var(--cor-madeira-hover);
+            text-decoration: underline;
         }
 
         @keyframes fadeInUp {
@@ -101,22 +115,22 @@
         <div class="card login-card">
             
             <div class="login-header">
-                <i class="bi bi-person-circle fs-1 mb-2"></i> 
-                <h4 class="mb-0 fw-bold">Bem-vindo de volta!</h4>
-                <small class="text-white-50">Acesse sua conta para continuar</small>
+                <i class="bi bi-person fs-1 mb-2"></i> 
+                <h4 class="mb-0 fw-bold">Bem-vindo</h4>
+                <small class="text-white-50">Área do Cliente</small>
             </div>
 
             <div class="card-body p-4 p-md-5">
                 
                 <?php if (isset($erro)): ?>
-                    <div class="alert alert-danger d-flex align-items-center" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" style="background-color: #fff5f5; border-color: #fc8181; color: #c53030;">
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>
                         <div><?php echo $erro; ?></div>
                     </div>
                 <?php endif; ?>
 
                 <?php if (isset($_GET['msg']) && $_GET['msg'] == 'sucesso'): ?>
-                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <div class="alert alert-success d-flex align-items-center" role="alert" style="background-color: #f0fff4; border-color: #68d391; color: #276749;">
                         <i class="bi bi-check-circle-fill me-2"></i>
                         <div>Cadastro realizado! Faça login.</div>
                     </div>
@@ -127,7 +141,7 @@
                     <div class="mb-4">
                         <label for="email" class="form-label text-muted fw-bold small">E-MAIL</label>
                         <div class="input-group">
-                            <span class="input-group-text text-muted"><i class="bi bi-envelope-fill"></i></span>
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                             <input type="email" name="email" id="email" class="form-control" required placeholder="seu@email.com">
                         </div>
                     </div>
@@ -135,9 +149,9 @@
                     <div class="mb-4">
                         <label for="senha" class="form-label text-muted fw-bold small">SENHA</label>
                         <div class="input-group">
-                            <span class="input-group-text text-muted"><i class="bi bi-lock-fill"></i></span>
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
                             <input type="password" name="senha" id="senha" class="form-control" required placeholder="Sua senha">
-                            <button class="btn btn-outline-secondary border-start-0" type="button" onclick="mostrarSenha()" style="border-color: #ced4da;">
+                            <button class="btn btn-outline-secondary border-start-0" type="button" onclick="mostrarSenha()" style="border-color: #ced4da; background-color: #fcfcfc;">
                                 <i id="iconeSenha" class="bi bi-eye"></i>
                             </button>
                         </div>
@@ -155,7 +169,7 @@
             </div>
             
             <div class="card-footer text-center py-3 bg-light border-0">
-                <small class="text-muted">Não tem conta <a href="?page=cadastrar" class="link-destaque">Cadastre-se agora</a></small>
+                <small class="text-muted">Ainda não possui conta? <a href="?page=cadastrar" class="link-destaque">Criar cadastro</a></small>
             </div>
         </div>
         

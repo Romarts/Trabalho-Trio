@@ -17,15 +17,6 @@
         border-radius: 8px;
         border: 1px solid #dee2e6;
     }
-    .btn-qty {
-        width: 30px;
-        height: 30px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
     .total-summary {
         background: #fdfdfd;
         border: 1px solid #eee;
@@ -34,7 +25,7 @@
     }
 </style>
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="bi bi-bag"></i> Carrinho de Compras</h2>
         <span class="badge bg-secondary rounded-pill"><?php echo isset($_SESSION['carrinho']) ? count($_SESSION['carrinho']) : 0; ?> itens</span>
@@ -57,7 +48,7 @@
     <?php if (empty($_SESSION['carrinho'])): ?>
         <div class="text-center py-5">
             <h3 class="text-muted">Seu carrinho está vazio 😢</h3>
-            <a href="?page=produtos" class="btn btn-primary mt-3">Ver Produtos</a>
+            <a href="?page=produtos" class="btn btn-primary mt-3" style="background-color: #A0522D; border: none;">Ver Coleção</a>
         </div>
     <?php else: ?>
         <div class="row">
@@ -79,8 +70,14 @@
                             foreach ($_SESSION['carrinho'] as $id => $item): 
                                 $subtotal = $item['preco'] * $item['qtd'];
                                 $total_geral += $subtotal;
-                                // Pega a imagem ou usa uma padrão se não tiver
-                                $img = !empty($item['imagem']) ? $item['imagem'] : 'https://dummyimage.com/80x80/dee2e6/6c757d.jpg';
+                                
+                                // Lógica da imagem segura
+                                $caminho_foto = $item['imagem'] ?? '';
+                                if (!empty($caminho_foto) && file_exists($caminho_foto)) {
+                                    $img = $caminho_foto;
+                                } else {
+                                    $img = 'https://dummyimage.com/300x300/fcfcfc/a0522d.jpg&text=Sem+Foto';
+                                }
                             ?>
                             <tr>
                                 <td class="ps-4">
@@ -93,13 +90,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <!-- Formulário para alterar quantidade -->
                                     <form action="?page=atualizar_carrinho" method="POST" class="d-flex justify-content-center align-items-center gap-2">
-                                        <!-- Truque para chamar a rota certa, já que não estamos usando Roteador complexo -->
-                                        <!-- No seu index.php você precisaria adicionar case 'atualizar_carrinho' apontando para $carrinho->atualizar() -->
-                                        <!-- OU simplificamos usando o próprio input change se preferir, mas aqui vai com botões -->
-                                        
-                                        <!-- Visual apenas, a lógica real precisaria de um ajuste na rota se quiser botões + e - -->
                                         <div class="input-group input-group-sm" style="width: 100px;">
                                             <input type="number" name="qtd" value="<?php echo $item['qtd']; ?>" class="form-control text-center" min="1">
                                             <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -137,10 +128,11 @@
                     <hr>
                     <div class="d-flex justify-content-between mb-4">
                         <span class="h5">Total</span>
-                        <span class="h4 text-primary fw-bold">R$ <?php echo number_format($total_geral, 2, ',', '.'); ?></span>
+                        <span class="h4 fw-bold" style="color: #A0522D;">R$ <?php echo number_format($total_geral, 2, ',', '.'); ?></span>
                     </div>
                     
-                    <a href="?page=finalizar" class="btn btn-success w-100 btn-lg mb-2 shadow">
+                    <!-- Link corrigido para PAGAMENTO -->
+                    <a href="?page=pagamento" class="btn w-100 btn-lg mb-2 shadow text-white" style="background-color: #A0522D;">
                         Finalizar Compra
                     </a>
                     <a href="?page=produtos" class="btn btn-outline-secondary w-100">

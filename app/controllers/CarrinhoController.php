@@ -25,12 +25,14 @@ class CarrinhoController {
                     'id' => $produto['id'],
                     'nome' => $produto['nome'],
                     'preco' => $produto['preco'],
-                    'imagem' => $produto['url_imagem'], // <--- O SEGREDO ESTÁ AQUI (Salva a foto)
+                    'imagem' => $produto['imagem'] ?? null, 
                     'qtd' => 1
                 ];
             }
         }
-        header('Location: ?page=carrinho');
+        
+        // Redireciona via JavaScript para evitar erros de cabeçalho
+        echo "<script>window.location.href='?page=carrinho';</script>";
         exit;
     }
 
@@ -38,23 +40,26 @@ class CarrinhoController {
         if (isset($_SESSION['carrinho'][$id])) {
             unset($_SESSION['carrinho'][$id]);
         }
-        header('Location: ?page=carrinho');
+        
+        // Redireciona via JavaScript
+        echo "<script>window.location.href='?page=carrinho';</script>";
         exit;
     }
 
     public function atualizar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
-            $nova_qtd = (int)$_POST['qtd']; // Força ser número inteiro
+            $nova_qtd = (int)$_POST['qtd']; 
 
             if ($nova_qtd > 0 && isset($_SESSION['carrinho'][$id])) {
                 $_SESSION['carrinho'][$id]['qtd'] = $nova_qtd;
             } elseif ($nova_qtd == 0) {
-                // Se colocar zero, remove o item
                 unset($_SESSION['carrinho'][$id]);
             }
         }
-        header('Location: ?page=carrinho');
+        
+        // Redireciona via JavaScript
+        echo "<script>window.location.href='?page=carrinho';</script>";
         exit;
     }
 
@@ -63,43 +68,47 @@ class CarrinhoController {
     }
 
     public function finalizar() {
+        // Se não estiver logado, manda pro login
         if (!isset($_SESSION['usuario_id'])) {
             $_SESSION['redirect_after_login'] = '?page=finalizar';
-            header('Location: ?page=login');
-            exit;
-        }
-        if (empty($_SESSION['carrinho'])) {
-            header('Location: ?page=carrinho&msg=vazio');
+            echo "<script>window.location.href='?page=login';</script>";
             exit;
         }
 
-        // Salva Pedido (Seu modelo de Pedido)
+        // Se carrinho vazio
+        if (empty($_SESSION['carrinho'])) {
+            echo "<script>window.location.href='?page=carrinho&msg=vazio';</script>";
+            exit;
+        }
+
+        // Salva Pedido
         require_once '../app/models/Pedido.php';
         $total = 0;
         foreach ($_SESSION['carrinho'] as $item) {
             $total += $item['preco'] * $item['qtd'];
         }
         
-        // Tenta salvar o pedido
-        // Se der erro aqui é porque falta criar o arquivo Pedido.php, mas vamos seguir sua lógica
         if (class_exists('Pedido')) {
             $pedidoModel = new Pedido();
-            $pedidoModel->salvar($_SESSION['usuario_id'], $total);
+            if (method_exists($pedidoModel, 'salvar')) {
+                $pedidoModel->salvar($_SESSION['usuario_id'], $total);
+            }
         }
 
         // Baixa Estoque
         $produtoModel = new Produto();
         foreach ($_SESSION['carrinho'] as $id => $item) {
-            // Verifica se o método existe para evitar erro fatal
             if (method_exists($produtoModel, 'baixarEstoque')) {
                 $produtoModel->baixarEstoque($id, $item['qtd']);
             }
         }
 
+        // Limpa carrinho
         unset($_SESSION['carrinho']);
         if (isset($_SESSION['redirect_after_login'])) unset($_SESSION['redirect_after_login']);
         
-        header('Location: ?page=carrinho&msg=sucesso');
+        // Sucesso
+        echo "<script>window.location.href='?page=carrinho&msg=sucesso';</script>";
         exit;
     }
 }

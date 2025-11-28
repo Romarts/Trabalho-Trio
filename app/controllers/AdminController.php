@@ -55,13 +55,38 @@ class AdminController {
     }
 
     // Apaga o produto
-    public function excluir() {
-        if (isset($_GET['id'])) {
-            $produtoModel = new Produto();
-            $produtoModel->excluir($_GET['id']);
+public function excluir() {
+    // Verifica se tem um ID para deletar
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        
+        $produtoModel = new Produto();
+        
+        // Tenta deletar
+        // (Assumindo que seu Model Produto tem o método excluir ou deletar)
+        // Se o método no seu Model chamar 'delete', troque abaixo
+        if ($produtoModel->excluir($id)) {
+            
+            // SUCESSO: Redireciona via JS com a mensagem 'deletado'
+            echo "<script>
+                window.location.href = '?page=admin-produtos&msg=deletado';
+            </script>";
+            exit;
+            
+        } else {
+            // ERRO AO DELETAR
+            echo "<script>
+                alert('Erro ao tentar excluir o produto.');
+                window.location.href = '?page=admin-produtos';
+            </script>";
+            exit;
         }
-        header('Location: ?page=admin-produtos&msg=deletado');
+    } else {
+        // Se não tiver ID, só volta
+        header('Location: ?page=admin-produtos');
+        exit;
     }
+}
 
     // --- PARTE NOVA: VENDAS ---
     public function vendas() {
