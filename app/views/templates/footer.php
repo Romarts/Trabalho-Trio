@@ -76,7 +76,7 @@
             <div class="col-lg-4 col-md-12">
                 <h5 class="footer-title">Contato</h5>
                 <p class="mb-2"><i class="bi bi-envelope me-2"></i> contato@artemadeira.com</p>
-                <p><i class="bi bi-whatsapp me-2"></i> (11) 99999-9999</p>
+                <p><i class="bi bi-whatsapp me-2"></i> (44) 9974-9071</p>
                 
                 <div class="mt-3">
                     <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
